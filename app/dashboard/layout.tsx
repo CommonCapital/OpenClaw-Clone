@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Sidebar } from "./components/ui/Sidebar";
 
 
 
@@ -24,8 +25,11 @@ export default  async function RootLayout({
               redirect("/auth/sign-in");
             }
   return (
-   <div>
-    {children}
-   </div>
+    <div className="flex min-h-screen w-full bg-[#0a0900]">
+      <Sidebar />
+      <main className="flex flex-1 flex-col">
+        {children}
+      </main>
+    </div>
   );
 }

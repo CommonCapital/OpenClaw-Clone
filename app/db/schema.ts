@@ -1,11 +1,14 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, jsonb, uuid } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
+  agentEnabled: boolean("agent_enabled").default(true).notNull(),
+  onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
+  preferences: jsonb("preferences").default({}).notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
@@ -91,3 +94,54 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+export const integrationProviderEum = pgEnum("integration_provider", ["gmail", "google_calendar"]);
+export const taskStatusEnum= pgEnum("task_status", [
+    "pending",
+    "completed",
+    "cancelled",
+]);
+export const taskPriorityEnum = pgEnum("task_priority", [
+    "low",
+    "medium",
+    "high",
+]);
+export const agentRunStatusEnum = pgEnum("agent_run_status", [
+    "running",
+    "success",
+    "failed",
+]);
+
+
+export const integrations = pgTable("integrations", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").references(() => user.id, {onDelete: "cascade"}).notNull(),
+    provider: integrationProviderEum("provider").notNull(),
+    accessToken: text("access_token").notNull(),
+    refreshToken: text("refresh_token").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    scope: text("scope").array().notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const tasks = pgTable("tasks", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").references(() => user.id, {onDelete: "cascade"}).notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    status: taskStatusEnum("status").default("pending").notNull(),
+    priority: taskPriorityEnum("priority").default("medium").notNull(),
+    dueDate: timestamp("due_date"),
+    createdByAgent: boolean("created_by_agent").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+export interface ActionLogEntry {
+    emailId: string;
+    subject: string;
+    from: string;
+    date: string;
+    status: "success" | "error";
+    summary?: string;
+    
+}

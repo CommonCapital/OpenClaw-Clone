@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, pgEnum, jsonb, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, jsonb, uuid, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -143,5 +143,46 @@ export interface ActionLogEntry {
     date: string;
     status: "success" | "error";
     summary?: string;
-    
+    priority?: string;
+    category?: string;
+    needsReply?: boolean;
+    draftReply?: string | null;
+    actionItems?: {
+        title: string;
+        description: string;
+        dueDate?: string | null;
+    }[];
+    taskCreated?: number;
+    draftCreated?: boolean;
+    eventsCreated?: number;
+
 }
+
+export const agentRuns = pgTable("agent_runs", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").references(() => user.id, {onDelete: "cascade"}).notNull(),
+    status: agentRunStatusEnum("status").default("running").notNull(),
+    summary: text("summary"),
+    actionLog: jsonb("action_log").$type<ActionLogEntry[]>().default([]).notNull(),
+    emailsProcessed: integer("emails_processed").default(0).notNull(),
+    tasksCreated: integer("tasks_created").default(0).notNull(),
+    draftsCreated: integer("drafts_created").default(0).notNull(),
+    errorMessage: text("error_message"),
+    startedAt: timestamp("started_at").defaultNow().notNull(),
+    completedAt: timestamp("completed_at"),
+    durationMs: integer("duration_ms"),
+});
+
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
+
+export type Integration = typeof integrations.$inferSelect;
+export type NewIntegration = typeof integrations.$inferInsert;
+
+export type Task = typeof tasks.$inferSelect;
+export type NewTask = typeof tasks.$inferInsert;
+
+export type AgentRun = typeof agentRuns.$inferSelect;
+export type NewAgentRun = typeof agentRuns.$inferInsert;
+
+export type ProcessedEmail = ActionLogEntry & { processedAt: Date };

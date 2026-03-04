@@ -1,3 +1,5 @@
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Calendar, CalendarIcon, MailIcon } from 'lucide-react'
 import React from 'react'
@@ -11,7 +13,7 @@ const SettingsPage = () => {
             icon: MailIcon,
         },
         {
-            key: "calendar",
+            key: "google_calendar",
             name: "Calendar",
             description: "Manage your schedules and never miss important events",
             icon: CalendarIcon
@@ -41,9 +43,30 @@ const SettingsPage = () => {
                     <div className='integration-info'>
                          <provider.icon className='integration-icon' />
                          <div>
-                            
+                            <p className="font-medium text-foreground">
+                                {provider.name}
+                            </p>
+                            <p className="status-label">
+                                {provider.description}
+                            </p>
                          </div>
                     </div>
+                    {false ? (
+                          <div className='integration-actions'>
+                            <Badge 
+                            className='bg-primary'
+                            >
+                                Connected
+                            </Badge>
+                          {/** <DisconnectButton provider={provider.key} />  */}  
+                          </div>
+                    ):(
+                            <Button asChild>
+                                <a href={`/api/auth/google?provider=${provider.key}`}>
+                                
+                                Connect</a>
+                            </Button>
+                    )}
                     </div>
                 ))}
             </CardContent>

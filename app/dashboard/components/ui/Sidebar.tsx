@@ -28,7 +28,7 @@ const navLinks = [
     ),
   },
   {
-    href: "/settings",
+    href: "/dashboard/settings",
     label: "Settings",
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

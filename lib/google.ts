@@ -17,6 +17,20 @@ export type GoogleProvider = keyof typeof GOOGLE_SCOPES;
 export function createOAuth2Client() {
     return new google.auth.OAuth2(
 process.env.GOOGLE_CLIENT_ID!,
-process.env.
-    )
+process.env.GOOGLE_CLIENT_SECRET!,
+`${process.env.NEXT_PUBLIC_ARP_URL}/api/auth/google/callback`,
+    );
+}
+
+export function getAuthUrl(provider: GoogleProvider, state: string): string {
+    const oauth2Client = createOAuth2Client();
+
+    return oauth2Client.generateAuthUrl({
+        access_type: "offline",
+        prompt: "consent",
+        scope: [...GOOGLE_SCOPES[provider]],
+        state,
+        include_granted_scopes: true,
+    });
+
 }

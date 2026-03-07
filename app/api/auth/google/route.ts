@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { getAuthUrl, GoogleProvider } from "@/lib/google";
 export async function GET(request: NextRequest) {
      const session = await auth.api.getSession({
                   headers: await headers(),
@@ -24,8 +25,8 @@ export async function GET(request: NextRequest) {
                     path: "/",
                     sameSite: "lax",
                 });
-                const authUrl = getAuthUrl(provider, state);
+                const authUrl = getAuthUrl(provider as GoogleProvider, state);
                 
 
-    return new Response("Hello, Next.js!")
+    return NextResponse.redirect(authUrl)
 }

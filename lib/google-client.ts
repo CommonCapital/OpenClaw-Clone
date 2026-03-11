@@ -40,6 +40,7 @@ export async function getGoogleClient(userId: string, provider: GoogleProvider) 
             ),
             }).where(eq(integrations.id, integration.id));
 oauth2Client.setCredentials(credentials);
+
         } catch (error) {
 
         }

@@ -1,22 +1,42 @@
+import { getUserIntegrations } from '@/app/db/queries'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { auth } from '@/lib/auth'
 import { Calendar, CalendarIcon, MailIcon } from 'lucide-react'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-const SettingsPage = () => {
+const  SettingsPage = async () => {
+    const session = await auth.api.getSession({
+                              headers: await headers(),
+                            });
+    if (!session) {
+                  redirect("/auth/sign-in");
+                }         
+    const user = session?.user;
+    const userIntegrations = await getUserIntegrations(user.id)
+    const gmailIntegration = userIntegrations.find(
+        (integration) => integration.provider === "gmail", 
+    )
+    const gooogleCalendarIntegration = userIntegrations.find(
+        (integration) => integration.provider === "google_calendar",
+    );
     const providers = [
         {
             key: "gmail",
             name: "Gamil",
             description: "Read and Manage your inbox",
             icon: MailIcon,
+            integration: gmailIntegration,
         },
         {
             key: "google_calendar",
             name: "Calendar",
             description: "Manage your schedules and never miss important events",
-            icon: CalendarIcon
+            icon: CalendarIcon,
+            integration: gooogleCalendarIntegration,
         },
 
     ]
@@ -51,7 +71,7 @@ const SettingsPage = () => {
                             </p>
                          </div>
                     </div>
-                    {false ? (
+                    {provider.integration ? (
                           <div className='integration-actions'>
                             <Badge 
                             className='bg-primary'

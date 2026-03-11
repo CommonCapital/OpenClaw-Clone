@@ -33,3 +33,9 @@ const [result] = await db.insert(integrations).values(data).returning({id: integ
 return result.id;
 }
 
+
+
+export async function getUserIntegrations(userId: string) {
+    const results = await db.select().from(integrations).where(eq(integrations.userId, userId));
+    return results ?? [];
+}

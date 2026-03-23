@@ -12,7 +12,12 @@ const RunAgentButton = () => {
   const  handleRunAgent = async  () => {
 startTransition(async () => {
 try {
-    const response = await fetch("/api/agents/run");
+    const response = await fetch("/api/agents/run", {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/json",
+        },
+    });
     const result = await response.json();
     if (!response.ok) {
         throw new Error("Failed to run agent:", result.error)

@@ -4,6 +4,7 @@ import { decrypt, encrypt } from "./encryption";
 import { db } from "@/app/db";
 import { integrations } from "@/app/db/schema";
 import { eq } from "drizzle-orm";
+import {google} from "googleapis"
 
 const TOKEN_REFRESH_BUFFER_M5 = 5 * 60 * 1000
 
@@ -42,7 +43,28 @@ export async function getGoogleClient(userId: string, provider: GoogleProvider) 
 oauth2Client.setCredentials(credentials);
 
         } catch (error) {
+console.error(`Tokenization refresh failed for ${provider}`, error);
+await db.delete(integrations).where(eq(integrations.id, integration.id))
 
-        }
+return null;
+        };
+
     } 
+
+
+    return oauth2Client;
+};
+
+
+export async function getGmailClient(userId: string) {
+    const auth = await getGoogleClient(userId, "gmail");
+    if (!auth) return null;
+    return google.gmail({version: 'v1', auth});
+};
+
+export async function getCalendarClient(userId: string) {
+    const auth = await getGoogleClient(userId, "google_calendar");
+    if (!auth) return null;
+    return google.calendar({version: "v3", auth})
 }
+

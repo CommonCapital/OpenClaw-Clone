@@ -1,7 +1,8 @@
 import { GoogleProvider } from "@/lib/google";
-import { ActionLogEntry, agentRuns, integrations, tasks } from "./schema";
+import { ActionLogEntry, agentRuns, integrations, tasks, user } from "./schema";
 import {db} from "@/app/db"
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 export async function getIntegration(userId: string, provider: GoogleProvider) {
     const [integration] = await db.select().from(integrations).where(and(eq(integrations.userId, userId), eq(integrations.provider, provider)))
     .limit(1);
@@ -45,6 +46,11 @@ const [result] = await db.insert(agentRuns).values({userId, status: "running"}).
 return result ?? null
 }
 
+export async function getUser(userId: string) {
+    const User = await db.select().from(user).where(eq(user.id, userId )).limit(1)
+    return User
+}
+
 
 
 export async function completeAgentRun(agentRunId: string, data: {
@@ -83,4 +89,22 @@ const [task] = await db.insert(tasks).values({
     createdByAgent: data.createdByAgent ?? false
 }).returning();
 return task;
+}
+
+export async function getLatestAgentRun(userId: string ) {
+    
+const [run] = await db.select().from(agentRuns).where(eq(agentRuns.userId, userId)).orderBy(desc(agentRuns.startedAt)).limit(1);
+return run ?? null
+}
+
+export async function getUnreadEmails(userId: string) {
+const [result] = await db.select().from(agentRuns).where(and(eq(agentRuns.userId, userId), eq(agentRuns.status, 'success'))).orderBy(desc(agentRuns.startedAt)).limit(1
+
+);
+return {
+   emailsProcessed: result?.emailsProcessed ?? 0,
+   drafsCreated: result?.draftsCreated ?? 0,
+   tasksCreated: result.tasksCreated ?? 0,
+
+       }
 }

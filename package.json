@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.63",
+    "@ai-sdk/openai": "^3.0.48",
     "@base-ui/react": "^1.2.0",
     "@daveyplate/better-auth-ui": "^3.3.15",
     "@hookform/resolvers": "^5.2.2",

@@ -1,20 +1,24 @@
-'use client'
-import React from 'react'
-import RunAgentButton from './components/ui/RunAgentButton'
 
-const DashboardPage = () => {
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+
+import { Dashboard } from './components/Dashboard'
+import { getLatestAgentRun, getUnreadEmails, getUser, getUserIntegrations } from '../db/queries';
+
+ const DashboardPage = async () => {
+  const session = await auth.api.getSession({
+                headers: await headers(),
+              });
+ 
+
+  const userId = session?.user.id;
+  const latestRun = await getLatestAgentRun(userId!)
+  const userIntegrations = await getUserIntegrations(userId!)
+  const User = await getUser(userId!)
+  const {emailsProcessed, drafsCreated, tasksCreated} = await getUnreadEmails(userId!)
+
   return (
-    <div className='page-wrapper'>
-<div>
-  <h1 className='page-title'>
-    Dashboard
-  </h1>
-  <p>
-    Welcome back! Here's what's hapenning with your AI Agents.
-  </p>
-  <RunAgentButton />
-</div>
-    </div>
+   <Dashboard emailsProcessed={emailsProcessed} drafsCreated={drafsCreated} tasksCreated={tasksCreated} User={User} latestRun={latestRun} userIntegrations={userIntegrations}/>
   )
 }
 

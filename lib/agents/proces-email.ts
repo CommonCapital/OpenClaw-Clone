@@ -2,7 +2,7 @@ import z from "zod";
 import { CalendarEvent } from "./calendar";
 import { ParsedEmail } from "./gmail";
 import {generateText, Output} from "ai"
-
+import { openai } from '@ai-sdk/openai';
 export const emailAnalysisSchema = z.object({
 summary: z.string().describe("A 1-2 sentence summary of the email"),
 priority: z.enum(['low', 'medium', 'high']).describe(
@@ -46,7 +46,7 @@ export async function analyzeEmailWithAI(
     }
     
 const result = await generateText({
-    model: "anthropic/claude-sonnet-4",
+    model: openai("gpt-4.1"),
     prompt: `
     You are an AI assistant analyzing emails.
     Today's dats is ${today}.

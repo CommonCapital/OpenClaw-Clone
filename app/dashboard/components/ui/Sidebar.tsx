@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@daveyplate/better-auth-ui";
+import { useState } from "react";
 
 const navLinks = [
   {
@@ -41,7 +42,7 @@ const navLinks = [
 
 export function Sidebar() {
   const pathname = usePathname();
-
+  
   return (
     <aside
       className="relative hidden lg:flex flex-col justify-between h-screen w-60 xl:w-64 shrink-0 overflow-hidden border-r border-[#1a1800] bg-[#080807]"

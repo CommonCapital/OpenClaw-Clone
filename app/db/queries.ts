@@ -108,3 +108,9 @@ return {
 
        }
 }
+
+
+
+export async function GetUser1(userId: string) {
+
+}

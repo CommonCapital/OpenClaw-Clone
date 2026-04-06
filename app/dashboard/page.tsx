@@ -15,10 +15,10 @@ import { getLatestAgentRun, getUnreadEmails, getUser, getUserIntegrations } from
   const latestRun = await getLatestAgentRun(userId!)
   const userIntegrations = await getUserIntegrations(userId!)
   const User = await getUser(userId!)
-  const {emailsProcessed, drafsCreated, tasksCreated} = await getUnreadEmails(userId!)
+  const {emailsProcessed, draftsCreated, tasksCreated} = await getUnreadEmails(userId!)
 
   return (
-   <Dashboard emailsProcessed={emailsProcessed} drafsCreated={drafsCreated} tasksCreated={tasksCreated} User={User} latestRun={latestRun} userIntegrations={userIntegrations}/>
+   <Dashboard emailsProcessed={emailsProcessed} draftsCreated={draftsCreated} tasksCreated={tasksCreated} User={User} latestRun={latestRun} userIntegrations={userIntegrations}/>
   )
 }
 

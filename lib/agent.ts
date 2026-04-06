@@ -128,6 +128,7 @@ export async function runAgent(userId: string) {
             category: analysis.category,
             needsReply: analysis.needsReply,
             draftReply: analysis.draftReply,
+            actionItems: analysis.actionItems,
             calendarEvents: analysis.calendarEvents,
             tasksCreated: emailTasksCreated,
             draftsCreated: draftCreated,

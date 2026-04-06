@@ -103,14 +103,21 @@ const [result] = await db.select().from(agentRuns).where(and(eq(agentRuns.userId
 );
 return {
    emailsProcessed: result?.emailsProcessed ?? 0,
-   drafsCreated: result?.draftsCreated ?? 0,
+   draftsCreated: result?.draftsCreated ?? 0,
    tasksCreated: result.tasksCreated ?? 0,
 
        }
+};
+
+
+export async function getAgentRuns(userId: string) {
+    const results = await db.select().from(agentRuns).where(eq(agentRuns.userId, userId)).orderBy(desc(agentRuns.startedAt)).limit(20);
+    return results ?? [];
 }
 
 
 
-export async function GetUser1(userId: string) {
-
+export async function getAgentEligibleUsers() {
+    const results = await db.select().from(user).where(eq(user.agentEnabled, true))
+    return results ?? [];
 }

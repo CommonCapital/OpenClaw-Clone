@@ -17,7 +17,7 @@ interface Props {
   userIntegrations: Integration[] | []
   User: User[]
   emailsProcessed: number
-  drafsCreated: number
+  draftsCreated: number
   tasksCreated: number
 }
 
@@ -43,7 +43,7 @@ function StatRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
   )
 }
 
-export const Dashboard = ({ latestRun, userIntegrations, User, emailsProcessed, drafsCreated, tasksCreated }: Props) => {
+export const Dashboard = ({ latestRun, userIntegrations, User, emailsProcessed, draftsCreated, tasksCreated }: Props) => {
   const status = latestRun?.status
   const badge = status ? statusConfig[status] : null
 
@@ -60,7 +60,7 @@ export const Dashboard = ({ latestRun, userIntegrations, User, emailsProcessed, 
 
   const stats = [
     { label: 'Unread Emails',  value: emailsProcessed, icon: Inbox,    color: 'text-sky-400',    bg: 'bg-sky-500/10',    border: 'border-sky-500/15'    },
-    { label: 'Drafts Created', value: drafsCreated,    icon: PenLine,  color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/15' },
+    { label: 'Drafts Created', value: draftsCreated,    icon: PenLine,  color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/15' },
     { label: 'Tasks Created',  value: tasksCreated,    icon: ListTodo, color: 'text-amber-400',  bg: 'bg-amber-500/10',  border: 'border-amber-500/15'  },
   ]
 
